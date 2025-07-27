@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced CSS & JavaScript</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+      color: #2c3e50;
+    }
+
+    .quiz-container, .joke-container, .start-container {
+      background: linear-gradient(to bottom, #ffffffcc, #f0f4ffcc);
+      padding: 30px;
+      max-width: 650px;
+      margin: 30px auto;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    img {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    h2 {
+      color: #34495e;
+    }
+
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      border: 2px solid #2980b9;
+      background: #ecf0f1;
+      color: #2980b9;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .options button:hover {
+      background: #2980b9;
+      color: #fff;
+    }
+
+    .next-btn, .joke-btn, .start-btn {
+      margin-top: 20px;
+      background-color: #27ae60;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .next-btn:hover, .joke-btn:hover, .start-btn:hover {
+      background-color: #1e8449;
+    }
+
+    #result {
+      font-size: 18px;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #8e44ad;
+    }
+
+    @media (max-width: 600px) {
+      .quiz-container, .joke-container, .start-container {
+        padding: 20px;
+      }
+
+      .options button {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Start Section -->
+  <div class="start-container">
+    <h2>🎯 Ready to Play?</h2>
+    <p>Click below to begin the quiz.</p>
+    <button class="start-btn" onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <!-- Quiz Section -->
+  <div class="quiz-container" style="display:none;">
+    <img id="quiz-image" src="" alt="Quiz Image" />
+    <h2 id="question">Question Text</h2>
+    <div class="options" id="options"></div>
+    <button class="next-btn" onclick="nextQuestion()">Next</button>
+    <div id="result"></div>
+  </div>
+
+  <!-- Joke Section -->
+  <div class="joke-container">
+    <h2>😂 Need a Laugh?</h2>
+    <button class="joke-btn" onclick="fetchJoke()">Tell Me a Joke</button>
+    <p id="jokeText" style="margin-top:20px; font-size:18px;"></p>
+  </div>
+
+  <script>
+    // Quiz Logic
+    const quizData = [
+      {
+        question: "What does HTML stand for?",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa_EipSRfPVNEeyj6Q16qE79vugIbrS7s3YA&s",
+        options: ["HyperText Markup Language", "Hyper Trainer Marking Language", "HyperText Machine Language","Hyper Text Major Language"],
+        answer: "HyperText Markup Language"
+      },
+      {
+        question: "What does CSS stand for?",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPhwypxz7pIRAJ2zRk_3iXwH2n2ZNifpwAtg&s",
+        options: ["Customize Style Sheets", "Cascading Style Sheets", "Cascading Styling Sheets","Cascading Sheet Styles"],
+        answer: "Cascading Style Sheets"
+      },
+      {
+        question: "Which tag is used to include JavaScript in HTML?",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLf8Rf0TSLsIk1WM55ndjR3lokqsZRnBXc6A&s",
+        options: ["<java>", "<js>", "<script>", "<code>"],
+        answer: "<script>"
+      },
+      {
+        question: "Which HTML tag is used to define a paragraph?",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSa_EipSRfPVNEeyj6Q16qE79vugIbrS7s3YA&s",
+        options: ["<span>","<para>","<text>","<p>"],
+        answer: "<p>"
+      },
+      {
+        question: "Which CSS property controls text size?",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPhwypxz7pIRAJ2zRk_3iXwH2n2ZNifpwAtg&s",
+        options: ["font-style", "text-size", "font-size", "text-style"],
+        answer: "font-size"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function startQuiz() {
+      document.querySelector(".start-container").style.display = "none";
+      document.querySelector(".quiz-container").style.display = "block";
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const quiz = quizData[currentQuestion];
+      document.getElementById("quiz-image").src = quiz.image;
+      document.getElementById("question").innerText = quiz.question;
+
+      const optionsContainer = document.getElementById("options");
+      optionsContainer.innerHTML = "";
+      quiz.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(btn, opt);
+        optionsContainer.appendChild(btn);
+      });
+
+      document.getElementById("result").innerText = "";
+    }
+
+    function checkAnswer(button, selected) {
+      const correct = quizData[currentQuestion].answer;
+      const allButtons = document.querySelectorAll("#options button");
+
+      allButtons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.innerText === correct) {
+          btn.style.backgroundColor = "#2ecc71";
+          btn.style.color = "white";
+        } else if (btn.innerText === selected) {
+          btn.style.backgroundColor = "#e74c3c";
+          btn.style.color = "white";
+        }
+      });
+
+      if (selected === correct) score++;
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        document.querySelector(".quiz-container").innerHTML = `
+          <h2>✅ Quiz Completed!</h2>
+          <p>You scored <strong>${score}</strong> out of <strong>${quizData.length}</strong>.</p>
+        `;
+      }
+    }
+
+    // Joke Fetch
+    async function fetchJoke() {
+      const jokeEl = document.getElementById("jokeText");
+      jokeEl.innerText = "Loading joke...";
+      try {
+        const res = await fetch("https://official-joke-api.appspot.com/jokes/random");
+        const data = await res.json();
+        jokeEl.innerHTML = `😂 ${data.setup}<br><strong>${data.punchline}</strong>`;
+      } catch (error) {
+        jokeEl.innerText = "Oops! Failed to fetch a joke.";
+      }
+    }
+  </script>
+</body>
+</html>
