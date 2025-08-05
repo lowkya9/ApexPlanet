@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lowkya's Project</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: #f0f0f0;
+    }
+
+    header {
+      background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+      padding: 30px 20px;
+      text-align: center;
+      color: #fff;
+      border-bottom: 4px solid #00ffff;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      color: #00ffff;
+    }
+
+    nav {
+      margin-top: 10px;
+    }
+
+    nav a {
+      color: #00ffff;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    nav a:hover {
+      color: #ff6ec7;
+      text-decoration: underline;
+    }
+
+    section {
+      padding: 40px 20px;
+      background: #1e1e1e;
+      margin: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #00ffff;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    input, select, button {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #00ffff;
+      background-color: #2b2b2b;
+      color: #fff;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    input::placeholder {
+      color: #aaa;
+    }
+
+    button {
+      background: #00ffff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #ff6ec7;
+      color: #000;
+    }
+
+    .product {
+      background: #2b2b2b;
+      border: 2px solid #ff6ec7;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 15px 0;
+    }
+
+    .product h3 {
+      color: #00ffff;
+    }
+
+    footer {
+      text-align: center;
+      background: #2c5364;
+      color: white;
+      padding: 20px;
+      border-top: 4px solid #00ffff;
+    }
+
+    .home-options {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .home-options button {
+      width: 220px;
+      font-size: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .input-group {
+        display: flex;
+        gap: 10px;
+        max-width: 500px;
+      }
+
+      .input-group input {
+        flex: 1;
+      }
+
+      .home-options {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Lowkya's Full Project Implementation</h1>
+    <nav>
+      <a onclick="showSection('home')">Home</a>
+      <a onclick="showSection('portfolio')">Personal Portfolio</a>
+      <a onclick="showSection('todo')">To-Do List</a>
+      <a onclick="showSection('products')">Product Listing</a>
+    </nav>
+  </header>
+
+  <!-- Home Section -->
+  <section id="home">
+    <h2>Choose a Section</h2>
+    <div class="home-options">
+      <button onclick="showSection('portfolio')">Personal Portfolio</button>
+      <button onclick="showSection('todo')">To-Do List</button>
+      <button onclick="showSection('products')">Product Listing</button>
+    </div>
+  </section>
+
+  <!-- Portfolio Sections -->
+  <section id="about">
+    <h2>Personal Details</h2>
+    <p>Name: Endluri Lowkya</p>
+    <p>Education: B.Tech </p>
+    <p>Branch: Computer Science and Engineering</p>
+    <p>Location: Nellore, Andhra Pradesh, India</p>
+    <p>Skills: HTML, CSS, JavaScript</p>
+    <p>Programing Languages: Python, Java, C</p>
+  </section>
+
+  <section id="projects">
+    <h2>Projects</h2>
+    <ul>
+      <li>Personal Portfolio Website</li>
+      <li>Airline Reservation System</li>
+      <li>Online Quiz Application</li>
+    </ul>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <h2>Contact</h2>
+    <p>Email: lowkya0901@gmail.com</p>
+    <p>Phone: +91 7981571914</p>
+    <p>LinkedIn: <a href="https://www.linkedin.com/in/endluri-lowkya-56b39349"target="_blank">Endluri Lowkya</a></p>
+    <p>GitHub: <a href="https://github.com/lowkya9" target="_blank">Lowkya</a></p>
+  </section>
+
+  <!-- To-Do List Section -->
+  <section id="todo">
+    <h2>To-Do List App</h2>
+    <input type="text" id="taskInput" placeholder="Enter a task" />
+    <button onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+  </section>
+
+  <!-- Product Listing Section -->
+  <section id="products">
+    <h2>Product Listing</h2>
+
+    <label>Filter by Category:</label>
+    <select id="categoryFilter">
+      <option value="all">All</option>
+      <option value="electronics">Electronics</option>
+      <option value="clothing">Clothing</option>
+    </select>
+
+    <label>Sort by Price:</label>
+    <select id="priceSort">
+      <option value="asc">Low to High</option>
+      <option value="desc">High to Low</option>
+    </select>
+
+    <div id="productContainer"></div>
+  </section>
+
+  <footer>
+    <p>© 2025 Lowkya. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // To-Do List
+    const taskList = document.getElementById("taskList");
+    const taskInput = document.getElementById("taskInput");
+
+    function loadTasks() {
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      tasks.forEach(task => {
+        const li = document.createElement("li");
+        li.textContent = task;
+        taskList.appendChild(li);
+      });
+    }
+
+    function addTask() {
+      const task = taskInput.value;
+      if (task) {
+        const li = document.createElement("li");
+        li.textContent = task;
+        taskList.appendChild(li);
+
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        tasks.push(task);
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+
+        taskInput.value = "";
+      }
+    }
+
+    loadTasks();
+
+    // Product Listing
+    const products = [
+      { name: "Smartphone", category: "electronics", price: 15000 },
+      { name: "T-shirt", category: "clothing", price: 500 },
+      { name: "Laptop", category: "electronics", price: 50000 },
+      { name: "Jeans", category: "clothing", price: 1200 }
+    ];
+
+    const container = document.getElementById("productContainer");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const priceSort = document.getElementById("priceSort");
+
+    function renderProducts(filtered) {
+      container.innerHTML = "";
+      filtered.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `<h3>${p.name}</h3><p>Category: ${p.category}</p><p>Price: ₹${p.price}</p>`;
+        container.appendChild(div);
+      });
+    }
+
+    function applyFilters() {
+      let filtered = [...products];
+      const category = categoryFilter.value;
+      const sort = priceSort.value;
+
+      if (category !== "all") {
+        filtered = filtered.filter(p => p.category === category);
+      }
+
+      filtered.sort((a, b) => sort === "asc" ? a.price - b.price : b.price - a.price);
+
+      renderProducts(filtered);
+    }
+
+    categoryFilter.addEventListener("change", applyFilters);
+    priceSort.addEventListener("change", applyFilters);
+
+    applyFilters();
+
+    // Section Visibility
+    const allSections = ["home", "about", "projects", "todo", "products", "contact"];
+
+    function showSection(sectionName) {
+      allSections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+      });
+
+      if (sectionName === "portfolio") {
+        document.getElementById("about").style.display = "block";
+        document.getElementById("projects").style.display = "block";
+        document.getElementById("contact").style.display = "block";
+      } else {
+        const target = document.getElementById(sectionName);
+        if (target) target.style.display = "block";
+      }
+    }
+
+    // Initialize view
+    showSection("home");
+  </script>
+</body>
+</html>
