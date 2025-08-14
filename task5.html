@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLOVE Store</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:Poppins,Arial,sans-serif;line-height:1.5;background:#f5f5f5;color:#333;}
+header{background:linear-gradient(90deg,#2193b0,#6dd5ed);color:white;padding:1rem 0;}
+header h1{text-align:center;font-size:2rem;margin-bottom:.5rem;font-weight:bold;}
+nav ul{display:flex;justify-content:center;list-style:none;gap:1rem;flex-wrap:wrap;}
+nav a{color:white;text-decoration:none;padding:.5rem 1rem;border-radius:5px;transition:background .3s;font-weight:bold;cursor:pointer;}
+nav a.active,nav a:hover{background:rgba(255,255,255,.2);}
+.section{display:none;padding:1rem;min-height:60vh;}
+.active-section{display:block;}
+.products,.cart-items,.categories-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem;}
+.product-card,.cart-card,.category-card{background:white;padding:1rem;border-radius:12px;box-shadow:0 6px 12px rgba(0,0,0,.1);text-align:center;transition:transform .2s,box-shadow .2s;}
+.product-card:hover,.cart-card:hover,.category-card:hover{transform:translateY(-5px);box-shadow:0 10px 20px rgba(0,0,0,.15);}
+.product-card img,.cart-card img,.category-card img{width:100%;height:150px;object-fit:cover;border-radius:10px;margin-bottom:.5rem;}
+h3{color:#2193b0;margin-bottom:.5rem;}
+p{margin-bottom:.5rem;font-weight:bold;}
+button{padding:.5rem 1rem;background:#2193b0;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:bold;transition:background .3s;}
+button:hover{background:#6dd5ed;}
+footer{text-align:center;padding:1rem;background:#d0e7f9;margin-top:2rem;font-weight:bold;}
+@media(max-width:600px){nav ul{flex-direction:column;gap:.5rem;}}
+</style>
+</head>
+<body>
+
+<header>
+<h1>CLOVE</h1>
+<nav>
+<ul>
+<li><a id="home-btn" class="active">Home</a></li>
+<li><a id="products-btn">Products</a></li>
+<li><a id="categories-btn">Categories</a></li>
+<li><a id="cart-btn">Cart (<span id="cart-count">0</span>)</a></li>
+</ul>
+</nav>
+</header>
+
+<main>
+<section id="home" class="section active-section">
+<h2 style="text-align:center;color:#2193b0;">Welcome to CLOVE!</h2>
+<p style="text-align:center;font-size:1.2rem;">Explore amazing products and add them to your cart.</p>
+</section>
+
+<section id="products" class="section">
+<h2 style="text-align:center;color:#2193b0;">Our Products</h2>
+<div class="products" id="products-container"></div>
+</section>
+
+<section id="categories" class="section">
+<h2 style="text-align:center;color:#2193b0;">Categories</h2>
+<div class="categories-list" id="categories-container"></div>
+</section>
+
+<section id="cart" class="section">
+<h2 style="text-align:center;color:#2193b0;">Your Cart</h2>
+<div class="cart-items" id="cart-container"></div>
+<p id="cart-total" style="text-align:center;font-size:1.2rem;margin-top:1rem;"></p>
+</section>
+</main>
+
+<footer>
+&copy; 2025 CLOVE Mini E-Commerce
+</footer>
+
+<script>
+const products=[
+{id:1,name:"Diamond Earrings",category:"Earrings",price:5000,img:"https://www.miabytanishq.com/dw/image/v2/BKCK_PRD/on/demandware.static/-/Sites-Tanishq-product-catalog/default/dw79b6e721/images/Mia/hi-res/3824SKN.jpg?sw=640&sh=640"},
+{id:2,name:"Gold Bracelet",category:"Bracelets",price:4000,img:"https://i.etsystatic.com/11057637/r/il/bd70c2/6416719586/il_fullxfull.6416719586_94x6.jpg"},
+{id:3,name:"Silver Necklace",category:"Necklaces",price:3000,img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIAq-I-w0ieFxspdIG-tootKgeSvojf22j6g&s"},
+{id:4,name:"Pearl Earrings",category:"Earrings",price:2000,img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSp_qmnAVnIHnsYFvZHcAZ-kPca0E2hlxGRJA&s"},
+{id:5,name:"Silver Bracelet",category:"Bracelets",price:1500,img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThGUqWYZZf5rw9UwHz7YCxzQngwrUZmMswdOj2pJbBndwd1psBjhO7MSct1gooxoXqHj8&usqp=CAU"},
+{id:6,name:"Glass Bangles",category:"Bangles",price:400,img:"https://images.jijivishaonline.com/2024/05/JVWJWBA059_3-600x900.jpg"},
+{id:7,name:"Silk Hairband",category:"Hairbands",price:200,img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUtwlHybAa3xJsfljRPdi1CkcVvkcY5Z1xVg&s"}
+];
+
+const categories=[
+{name:"Earrings",img:"https://d25g9z9s77rn4i.cloudfront.net/uploads/product/1118/1660918211_941289e3eaefa3afeae3.png"},
+{name:"Bracelets",img:"https://www.giva.co/cdn/shop/articles/1_567_-min.jpg?v=1728480334&width=1100"},
+{name:"Necklaces",img:"https://image.made-in-china.com/2f0j00pJLqrsVIbcbT/New-Simple-Leaf-Shape-Necklace-Stainless-Steel-Diamond-Piece-Small-Pendant-Plated-18K-Gold-Choker-Necklace.webp"},
+{name:"Bangles",img:"https://nischalafashions.in/wp-content/uploads/2025/06/NFBA54-900-2-scaled.jpg"},
+{name:"Hairbands",img:"https://thesilkcollection.com/cdn/shop/files/silk-hair-ties-ocean-blue-hair-bands_aaaf62fd-bf04-4554-9528-820e694df10f.jpg?v=1748684681&width=1080"}
+];
+
+let cart=[];
+
+const sections={home:document.getElementById('home'),products:document.getElementById('products'),categories:document.getElementById('categories'),cart:document.getElementById('cart')};
+const links={home:document.getElementById('home-btn'),products:document.getElementById('products-btn'),categories:document.getElementById('categories-btn'),cart:document.getElementById('cart-btn')};
+const productsContainer=document.getElementById('products-container');
+const categoriesContainer=document.getElementById('categories-container');
+const cartContainer=document.getElementById('cart-container');
+const cartCount=document.getElementById('cart-count');
+const cartTotal=document.getElementById('cart-total');
+
+function showSection(sectionName){
+for(const key in sections){sections[key].classList.remove('active-section');links[key].classList.remove('active');}
+sections[sectionName].classList.add('active-section');
+links[sectionName].classList.add('active');
+if(sectionName==='products')displayProducts(products);
+if(sectionName==='categories')displayCategories();
+if(sectionName==='cart')displayCart();
+}
+
+links.home.addEventListener('click',()=>showSection('home'));
+links.products.addEventListener('click',()=>showSection('products'));
+links.categories.addEventListener('click',()=>showSection('categories'));
+links.cart.addEventListener('click',()=>showSection('cart'));
+
+function displayProducts(list){
+productsContainer.innerHTML='';
+list.forEach(p=>{
+const card=document.createElement('div');card.className='product-card';
+card.innerHTML=`<img src="${p.img}" alt="${p.name}" loading="lazy"><h3>${p.name}</h3><p>₹${p.price}</p><button onclick="addToCart(${p.id})">Add to Cart</button>`;
+productsContainer.appendChild(card);
+});
+}
+
+function displayCategories(){
+categoriesContainer.innerHTML='';
+categories.forEach(cat=>{
+const card=document.createElement('div');card.className='category-card';
+card.innerHTML=`<img src="${cat.img}" alt="${cat.name}" loading="lazy"><h3>${cat.name}</h3><button onclick="filterByCategory('${cat.name}')">View ${cat.name}</button>`;
+categoriesContainer.appendChild(card);
+});
+}
+
+function filterByCategory(cat){
+const filtered=products.filter(p=>p.category===cat);
+showSection('products');displayProducts(filtered);
+}
+
+function addToCart(id){
+const product=products.find(p=>p.id===id);
+cart.push(product);cartCount.textContent=cart.length;
+}
+
+function displayCart(){
+cartContainer.innerHTML='';
+if(cart.length===0){cartContainer.innerHTML='<p style="text-align:center;">Your cart is empty.</p>';cartTotal.textContent='';return;}
+let total=0;cart.forEach(item=>{total+=item.price;
+const card=document.createElement('div');card.className='cart-card';
+card.innerHTML=`<img src="${item.img}" alt="${item.name}" loading="lazy"><h3>${item.name}</h3><p>₹${item.price}</p>`;
+cartContainer.appendChild(card);
+});cartTotal.textContent=`Total: ₹${total}`;
+}
+
+showSection('home');
+</script>
+</body>
+</html>
